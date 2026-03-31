@@ -41,6 +41,20 @@ public class Mapper {
             String normTarget = Utils.normalize(targetCol);
             String matchedCol = null;
 
+            // ===============================
+            // PREFIX MATCH
+            // ===============================
+            if (normTarget.startsWith("n") && normTarget.length() > 3) {
+                String stripped = normTarget.substring(1);
+
+                if (stripped.equals("lname")) stripped = "lastname";
+
+                if (normalizedSourceIndex.containsKey(stripped)) {
+                    matchedCol = sourceCols[normalizedSourceIndex.get(stripped)];
+                    System.out.println("Prefix match: " + targetCol + " → " + matchedCol);
+                }
+            }
+
             // --------------------------------
             // 1. EXACT MATCH
             // --------------------------------
@@ -199,6 +213,10 @@ public class Mapper {
         // ✅ Phone / Mobile
         if (target.contains("phone") || target.contains("mobile")) {
             return source.contains("phone") || source.contains("mobile");
+        }
+
+        if (target.contains("TITLE")) {
+            return source.contains("title");
         }
 
         // ✅ Company / Account

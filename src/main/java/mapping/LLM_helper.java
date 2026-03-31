@@ -10,8 +10,14 @@ public class LLM_helper {
 
     private static final String URL = "http://localhost:11434/api/generate";
 
-    // ✅ Cache to avoid repeated LLM calls
+    //  Cache to avoid repeated LLM calls
     private static final Map<String, String> CACHE = new HashMap<>();
+
+    private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
+            .build();
 
     public static String mapColumn(String targetCol, String[] sourceCols) {
 
@@ -31,20 +37,12 @@ public class LLM_helper {
                 lower.contains("consent") ||
                 lower.contains("profiling") ||
                 lower.contains("description") ||
-                lower.contains("notes")) {
+                lower.contains("notes")) ||
+                lower.contains("ttactic"){
 
             return null;
         }
 
-        // 3. BUILD HTTP CLIENT WITH TIMEOUT
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .build();
-
-        // 4. STRONG PROMPT
 
         String prompt =
                 "You are a STRICT data mapping engine.\n\n" +
@@ -63,14 +61,18 @@ public class LLM_helper {
                         "4. If unsure → return NONE\n" +
                         "5. NEVER guess based on vague similarity\n" +
                         "6. Abbreviations must match logically:\n" +
+                        "   ASSETNAME → asset\n" +
                         "   NFNAME → firstname\n" +
                         "   NLNAME → lastname\n" +
                         "   NZIP → zip\n" +
-                        "   NELECADR → email\n" +
                         "7. DO NOT map unrelated fields:\n" +
-                        "   Comments ≠ linkedin\n" +
-                        "   IP ≠ phone\n" +
-                        "   Website ≠ linkedin\n" +
+                        "   USSCORE != company \n" +
+                        "   area_of_responsibility != company \n" +
+                        "   Job Function != title \n" +
+                        "   Domain != country\n" +
+                        "   Comments != linkedin\n" +
+                        "   IP != phone\n" +
+                        "   Website != linkedin\n" +
                         "8. Custom fields rule:\n" +
                         "   customX → customX ONLY (same number)\n\n" +
 
@@ -96,7 +98,7 @@ public class LLM_helper {
                 .post(body)
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
+        try (Response response = CLIENT.newCall(request).execute()) {
 
             String res = response.body().string();
             JSONObject obj = new JSONObject(res);
@@ -122,6 +124,8 @@ public class LLM_helper {
             if (output.contains("->")) {
                 output = output.substring(output.lastIndexOf("->") + 2).trim();
             }
+
+
 
             // 7. VALIDATE OUTPUT
 
