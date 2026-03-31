@@ -196,17 +196,17 @@ public class Mapper {
             return source.contains("email");
         }
 
-        // ✅ Phone / Mobile (RELAXED)
+        // ✅ Phone / Mobile
         if (target.contains("phone") || target.contains("mobile")) {
             return source.contains("phone") || source.contains("mobile");
         }
 
-        // ✅ Company / Account (RELAXED)
+        // ✅ Company / Account
         if (target.contains("company") || target.contains("account")) {
             return source.contains("company");
         }
 
-        // ✅ Address / Street (RELAXED)
+        // ✅ Address / Street
         if (target.contains("street") || target.contains("address") || target.contains("adline")) {
             return source.contains("address");
         }
@@ -234,7 +234,7 @@ public class Mapper {
         }
 
 
-        // ✅ Revenue (RELAXED)
+        // ✅ Revenue
         if (target.contains("revenue")) {
             return source.contains("revenue") || source.contains("custom");
         }
@@ -245,7 +245,7 @@ public class Mapper {
         if (target.contains("level") && !source.contains("level")) return false;
         if (target.contains("agent") && !source.contains("name")) return false;
 
-        // ✅ Default: allow (IMPORTANT)
+        // ✅ Default: allow
         return true;
     }
 }

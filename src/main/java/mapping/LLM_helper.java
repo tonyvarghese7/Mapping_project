@@ -112,12 +112,6 @@ public class LLM_helper {
             // CLEAN OUTPUT
             output = output.replace("\"", "").trim();
 
-            // 🚫 Reject same-as-target output
-            if (Utils.normalize(output).equals(Utils.normalize(targetCol))) {
-                System.out.println("⚠️ LLM returned same as target for: " + targetCol);
-                CACHE.put(targetCol, null);
-                return null;
-            }
 
             // Handle Unicode arrow →
             if (output.contains("→")) {
