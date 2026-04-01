@@ -14,8 +14,8 @@ public class LLM_helper {
     private static final Map<String, String> CACHE = new HashMap<>();
 
     private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(40, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
             .build();
 
@@ -37,8 +37,8 @@ public class LLM_helper {
                 lower.contains("consent") ||
                 lower.contains("profiling") ||
                 lower.contains("description") ||
-                lower.contains("notes")) ||
-                lower.contains("ttactic"){
+                lower.contains("notes") ||
+                lower.contains("ttactic")){
 
             return null;
         }
@@ -104,6 +104,16 @@ public class LLM_helper {
             JSONObject obj = new JSONObject(res);
 
             String output = obj.optString("response", "").trim();
+
+            //  extract last word (most likely column)
+            if (output.contains(":")) {
+                output = output.substring(output.lastIndexOf(":") + 1).trim();
+            }
+
+            // remove extra lines
+            if (output.contains("\n")) {
+                output = output.split("\n")[0].trim();
+            }
 
 
             if (output.isEmpty()) {
