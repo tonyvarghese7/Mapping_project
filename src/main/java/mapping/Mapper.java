@@ -35,6 +35,7 @@ public class Mapper {
         // FIX 2: COLUMN MAPPING (ONCE)
         // ===============================
         Map<String, String> columnMapping = new HashMap<>();
+        List<String> unmappedColumns = new ArrayList<>();
 
         for (String targetCol : targetCols) {
 
@@ -107,6 +108,7 @@ public class Mapper {
             // --------------------------------
             if (matchedCol == null) {
                 System.out.println("🤖 Calling LLM for: " + targetCol);
+                unmappedColumns.add(targetCol);
 
                 try {
                     matchedCol = LLM_helper.mapColumn(targetCol, sourceCols);
@@ -141,6 +143,16 @@ public class Mapper {
         // ===============================
         List<String[]> output = new ArrayList<>();
         output.add(targetCols); // header
+
+        System.out.println("\n===============================");
+        System.out.println("⚠️ UNMAPPED COLUMNS:");
+        System.out.println("===============================");
+
+        for (String col : unmappedColumns) {
+            System.out.println(" - " + col);
+        }
+
+        System.out.println("Total Unmapped: " + unmappedColumns.size());
 
         // ===============================
         // PROCESS ROWS (NO MATCHING HERE!)

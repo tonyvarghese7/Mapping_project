@@ -18,6 +18,13 @@
             <version>5.7.1</version>
         </dependency>
 
+        <!-- Selenium -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.21.0</version>
+        </dependency>
+
         <!-- Fuzzy Matching -->
         <dependency>
             <groupId>me.xdrop</groupId>

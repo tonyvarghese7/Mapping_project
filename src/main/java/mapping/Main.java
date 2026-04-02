@@ -22,5 +22,11 @@ public class Main {
         writer.close();
 
         System.out.println("✅ Mapping completed!");
+
+        System.out.println("🚀 Starting automation...");
+
+        Automation.run();
+
+        System.out.println("✅ Automation completed!");
     }
 }
