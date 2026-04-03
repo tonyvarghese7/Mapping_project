@@ -60,11 +60,12 @@ public class LLM_helper {
                         "3. DO NOT explain\n" +
                         "4. If unsure → return NONE\n" +
                         "5. NEVER guess based on vague similarity\n" +
-                        "6. Abbreviations must match logically:\n" +
-                        "   ASSETNAME → asset\n" +
-                        "   NFNAME → firstname\n" +
-                        "   NLNAME → lastname\n" +
-                        "   NZIP → zip\n" +
+                        "6.CRITICAL RULES (MUST FOLLOW):\n" +
+                        "- You are NOT allowed to guess.\n" +
+                        "- If similarity is below 90%, return NONE.\n" +
+                        "- Returning a wrong column is WORSE than returning NONE.\n" +
+                        "- 'asset' is NOT a default mapping.\n" +
+                        "- If TARGET does not clearly match → return NONE.\n\n"+
                         "7. DO NOT map unrelated fields:\n" +
                         "   USSCORE != company \n" +
                         "   area_of_responsibility != company \n" +

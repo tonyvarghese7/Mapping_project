@@ -15,17 +15,17 @@ public class Main {
 
         System.out.println("🚀 Starting mapping...");
 
-        List<String[]> mapped = Mapper.mapCSV(source, target);
+        MappingResult result = Mapper.mapCSV(source, target);
 
         CSVWriter writer = new CSVWriter(new FileWriter(output));
-        writer.writeAll(mapped);
+        writer.writeAll(result.mappedData);
         writer.close();
 
         System.out.println("✅ Mapping completed!");
 
         System.out.println("🚀 Starting automation...");
 
-        Automation.run();
+        Automation.run(result.unmappedColumns);
 
         System.out.println("✅ Automation completed!");
     }

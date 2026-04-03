@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Mapper {
 
-    public static List<String[]> mapCSV(String sourcePath, String targetPath) throws Exception {
+    public static MappingResult mapCSV(String sourcePath, String targetPath) throws Exception {
 
         // ===============================
         // READ FILES
@@ -108,8 +108,6 @@ public class Mapper {
             // --------------------------------
             if (matchedCol == null) {
                 System.out.println("🤖 Calling LLM for: " + targetCol);
-                unmappedColumns.add(targetCol);
-
                 try {
                     matchedCol = LLM_helper.mapColumn(targetCol, sourceCols);
 
@@ -128,13 +126,13 @@ public class Mapper {
                 }
             }
 
-            // --------------------------------
-            // STORE RESULT
-            // --------------------------------
+
+            // STORE RESULT (FINAL DECISION)
+
             if (matchedCol == null) {
                 System.out.println("❌ No match for: " + targetCol);
+                unmappedColumns.add(targetCol);
             }
-
             columnMapping.put(targetCol, matchedCol);
         }
 
@@ -144,8 +142,8 @@ public class Mapper {
         List<String[]> output = new ArrayList<>();
         output.add(targetCols); // header
 
-        System.out.println("\n===============================");
-        System.out.println("⚠️ UNMAPPED COLUMNS:");
+
+        System.out.println(" UNMAPPED COLUMNS:");
         System.out.println("===============================");
 
         for (String col : unmappedColumns) {
@@ -185,7 +183,7 @@ public class Mapper {
             output.add(newRow);
         }
 
-        return output;
+        return new MappingResult(output, unmappedColumns);
     }
 
     public static boolean isValidMapping(String target, String source, List<String> sourceColumns ) {
@@ -269,7 +267,7 @@ public class Mapper {
             return source.contains("revenue") || source.contains("custom");
         }
 
-        // 🚫 Prevent wrong mappings
+        //  Prevent wrong mappings
         if (target.contains("placement")) return false;
         if (target.contains("function") && !source.contains("function")) return false;
         if (target.contains("level") && !source.contains("level")) return false;

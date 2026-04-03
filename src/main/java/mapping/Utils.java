@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class Utils {
 
     // Normalize function
@@ -10,7 +11,9 @@ public class Utils {
         if (col == null) return null;
         return col.toLowerCase()
                   .replace("_", "")
-                  .replace(" ", "");
+                  .replace(" ", "")
+                  .replace("\u00A0", "")
+                  .replaceAll("\\s+", "");
     }
 
     // Build normalized map
